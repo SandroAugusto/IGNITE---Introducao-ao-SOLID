@@ -8,8 +8,25 @@ interface IRequest {
 class ShowUserProfileUseCase {
   constructor(private usersRepository: IUsersRepository) {}
 
+  validateUserExists(user_id: string):boolean{
+    const userExists = this.usersRepository.findById(user_id);
+
+    if (!userExists) {
+      return false;
+    }
+
+    return true;
+  }
+
   execute({ user_id }: IRequest): User {
     // Complete aqui
+    const user = this.usersRepository.findById(user_id);
+
+    if (!user) {
+      throw new Error("User not exists");
+    }
+
+    return user;
   }
 }
 

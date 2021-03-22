@@ -8,8 +8,29 @@ interface IRequest {
 class ListAllUsersUseCase {
   constructor(private usersRepository: IUsersRepository) {}
 
+  validateUserToGetList(user_id: string):boolean{
+    const user = this.usersRepository.findById(user_id);
+
+    if (!user) {
+      return false;
+    }
+
+    if(!user.admin){
+      return false;
+    }
+
+    return true;
+  }
+
   execute({ user_id }: IRequest): User[] {
     // Complete aqui
+    const user = this.usersRepository.findById(user_id);
+
+    if (!user.admin) {
+      throw new Error("Sem permissão!");
+    }
+
+    return this.usersRepository.list();
   }
 }
 
